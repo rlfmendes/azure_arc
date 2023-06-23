@@ -850,7 +850,11 @@ foreach ($VM in $VMNames) {
         $psCred = New-Object System.Management.Automation.PSCredential($using:clientId, $azurePassword)
         Connect-AzAccount -Credential $psCred -TenantId $using:tenantId -ServicePrincipal
         Write-Host "[$(Get-Date -Format t)] INFO: Arc-enabling $hostname server." -ForegroundColor Gray
-        Redo-Command -ScriptBlock { Connect-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host" -Location $using:location }
+        Invoke-Command -ScriptBlock { Connect-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host" -Location $using:location }
+
+        while (-NOT (Get-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host" -Location $using:location)){
+            Write-Host "[$(Get-Date -Format t)] INFO: Waiting for Arc-enablement of $hostname server to complete. Sleeping 60 secs" -ForegroundColor Gray;
+            Start-Sleep -Seconds 60}
 
         # Connect clusters to Arc
         $deploymentPath = "C:\Deployment\config.json"
