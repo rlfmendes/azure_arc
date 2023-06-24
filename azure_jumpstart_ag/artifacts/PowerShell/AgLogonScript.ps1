@@ -852,7 +852,7 @@ foreach ($VM in $VMNames) {
         Write-Host "[$(Get-Date -Format t)] INFO: Arc-enabling $hostname server." -ForegroundColor Gray
         Invoke-Command -ScriptBlock { Connect-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host" -Location $using:location }
 
-        while (-NOT (Get-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host" -Location $using:location)){
+        while (-NOT (Get-AzConnectedMachine -ResourceGroupName $using:resourceGroup -Name "Ag-$hostname-Host")){
             Write-Host "[$(Get-Date -Format t)] INFO: Waiting for Arc-enablement of $hostname server to complete. Sleeping 60 secs" -ForegroundColor Gray;
             Start-Sleep -Seconds 60}
 
