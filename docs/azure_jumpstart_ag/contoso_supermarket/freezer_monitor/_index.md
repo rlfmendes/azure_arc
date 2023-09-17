@@ -4,7 +4,7 @@ weight: 100
 toc_hide: true
 ---
 
-# Data pipeline and reporting across cloud and edge - Sensor telemetry
+# Data pipeline and reporting across cloud and edge for sensor telemetry
 
 ## Overview
 
@@ -20,7 +20,7 @@ Contoso Supermarket is researching a number of additional health and safety syst
 
 - Motion and presence sensors to lights should be turned on for personal safety.
 
-The local collection and visualization of sensor data uses the same infrastructure as the [Infrastructure Observability](..\k8s_infra_observability\_index.md) stack, namely Prometheus and Grafana. This provides the store manager with a single pane of glass for monitoring both the infrastructure and the sensors, and minimizes the number of new technologies that the manager needs to learn and that Contoso must support.
+The local collection and visualization of sensor data uses the same infrastructure as the [Infrastructure Observability](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/k8s_infra_observability/) stack, namely Prometheus and Grafana. This provides the store manager with a single pane of glass for monitoring both the infrastructure and the sensors, and minimizes the number of new technologies that the manager needs to learn and that Contoso must support.
 
 [Prometheus](https://prometheus.io/) is a highly efficient open-source monitoring system that collects and stores metrics from various sources in real-time. It provides a flexible query language for analyzing the collected metrics and offers robust alerting capabilities. On the other hand, [Grafana](https://grafana.com/) is a powerful open-source data visualization and analytics platform. It allows users to create interactive and customizable dashboards to visualize the collected metrics in real-time and also offers its own alerting capabilities.
 
@@ -42,7 +42,7 @@ Contoso has an ADX dashboard report for Freezer Monitoring analytics and monitor
 
 ### Manually import dashboard
 
-> __NOTE: If you used the [Azure Developer CLI (azd) method](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/deployment/_index.md#deployment-via-azure-developer-cli-experimental) to deploy the Contoso Supermarket scenario, you may skip this section as the dashboard is automatically imported for you during the automated deployment.__
+> __NOTE: If you used the [Azure Developer CLI (azd) method](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/deployment/#deployment-via-azure-developer-cli) to deploy the Contoso Supermarket scenario, you may skip this section as the dashboard is automatically imported for you during the automated deployment.__
 
 To view the Freezer Monitoring dashboard you will first need to import it into ADX.
 
@@ -52,7 +52,7 @@ To view the Freezer Monitoring dashboard you will first need to import it into A
 
 - Copy these ADX dashboard JSON files on your local machine in a temporary folder to import into ADX dashboards. Alternatively, you can log in to ADX Dashboards directly on the Client VM.
 
-  > __NOTE: Depending on the account being used to log in to ADX portal, the Azure AD tenant of that account may have conditional access policies enabled and might prevent log in to ADX Dashboards from the Client VM as this VM is not managed by your organization.__
+  > __NOTE: Depending on the account being used to log in to the ADX portal, the Azure AD tenant of that account may have conditional access policies enabled to allow access only from corporate-managed devices (for example managed by Microsoft Intune) and might prevent login to ADX Dashboards from the Client VM as this VM is not managed by your organization.__
 
 - On your local machine open the browser of your choice OR on the Client VM open the Edge browser and log in to [ADX Dashboards](https://dataexplorer.azure.com/). Use the same user account that you deployed Jumpstart Agora in your subscription. Failure to use the same account will prevent access to the ADX Orders database to generate dashboards.
 
@@ -75,6 +75,8 @@ To view the Freezer Monitoring dashboard you will first need to import it into A
 - By default, the simulated IoT sensors are sending data to ADX so you will see at least a few minutes of data in the dashboard. Click Save to save the dashboard in ADX.
 
   ![Screenshot showing the default freezer dashboard](./img/adx_freezer_dashboard_default.png)
+
+  > __NOTE: Depending on the type of user account being used to access ADX dashboards, you might have issues accessing data in the _Orders_ database in the ADX cluster with an error _User principal 'msauser=xyz@abc.com' is not authorized to read database 'Orders'_. If you experience this access issue, refer [Jumpstart Agora - Contoso Supermarket scenario troubleshooting](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/troubleshooting#user-principal-is-not-authorized-to-read-database-orders) guide to troubleshoot and address this access issue__.
 
 ## Scenarios
 
@@ -270,7 +272,7 @@ From the MQTT Broker, the data is sent to Azure IoT Hub, which is a managed serv
 
 To see whether data is being received by Azure IoT Hub for your devices, from your local machine:
 
-- Open Resource Groups in the Azure Portal - [https://portal.azure.com](https://ms.portal.azure.com/#browse/resourcegroups)
+- Open Resource Groups in the [Azure Portal](https://ms.portal.azure.com/#browse/resourcegroups).
 
 - Click the new resource group you created for __Jumpstart Agora__.
 
@@ -300,12 +302,4 @@ To see the ADX dashboard, review the steps from ["Scenario 1: View the data in A
 
 ## Next steps
 
-Use the following guides to explore different use cases of Contoso Supermarket in Jumpstart Agora.
-
-- [CI/CD](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/ci_cd/_index.md)
-
-- [Observability](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/k8s_infra_observability/_index.md)
-
-- [Arc-enabled servers](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/arc_servers/_index.md)
-
-- [Troubleshooting](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/troubleshooting/_index.md)
+Now that you have seen how the data flows in the various Contoso Supermarket scenarios, you can now explore how to [enable AI at the edge and experiment with software configurations rollout using basic GitOps flow](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/ai/).

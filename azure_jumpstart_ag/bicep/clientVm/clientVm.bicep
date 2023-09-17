@@ -2,7 +2,7 @@
 param vmName string = 'Ag-VM-Client'
 
 @description('Username for the Virtual Machine')
-param windowsAdminUsername string = 'arcdemo'
+param windowsAdminUsername string = 'agora'
 
 @description('Password for Windows account. Password must have 3 of the following: 1 lower case character, 1 upper case character, 1 number, and 1 special character. The value must be between 12 and 123 characters long')
 @minLength(12)
@@ -72,7 +72,7 @@ param rdpPort string = '3389'
 param githubAccount string = 'microsoft'
 
 @description('Target GitHub branch')
-param githubBranch string = 'jumpstart_ag'
+param githubBranch string = 'main'
 
 @description('GitHub Personal access token for the user account')
 @secure()
@@ -93,7 +93,7 @@ var PublicIPNoBastion = {
   id: publicIpAddress.id
 }
 
-resource networkInterface 'Microsoft.Network/networkInterfaces@2022-01-01' = {
+resource networkInterface 'Microsoft.Network/networkInterfaces@2023-02-01' = {
   name: networkInterfaceName
   location: location
   tags: resourceTags
@@ -113,7 +113,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2022-01-01' = {
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIpAddresses@2022-01-01' = if (deployBastion == false) {
+resource publicIpAddress 'Microsoft.Network/publicIpAddresses@2023-02-01' = if (deployBastion == false) {
   name: publicIpAddressName
   location: location
   tags: resourceTags
@@ -127,7 +127,7 @@ resource publicIpAddress 'Microsoft.Network/publicIpAddresses@2022-01-01' = if (
   }
 }
 
-resource vm 'Microsoft.Compute/virtualMachines@2022-03-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   name: vmName
   location: location
   tags: resourceTags
@@ -182,7 +182,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   }
 }
 
-resource vmBootstrap 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = {
+resource vmBootstrap 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
   parent: vm
   name: 'Bootstrap'
   location: location

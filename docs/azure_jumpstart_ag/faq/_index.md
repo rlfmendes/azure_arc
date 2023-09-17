@@ -1,8 +1,7 @@
 ---
 type: docs
-title: "Jumpstart Agora FAQ"
-linkTitle: "Jumpstart Agora FAQ"
-weight: 7
+linkTitle: "Agora FAQ"
+weight: 2
 ---
 
 # Jumpstart Agora Frequently Asked Questions (FAQ)
@@ -15,11 +14,11 @@ Jumpstart Agora is a marketplace of various “cloud to edge” industry scenari
 
 ## What industry scenarios are available in Jumpstart Agora?
 
-Currently, Agora offers the [Contoso Supermarket](../contoso_supermarket/_index.md) retail industry experience. Contoso Supermarket includes everything needed to deploy, configure and use a realistic sample point-of-sale application including CI/CD, observability, security, and more.
+Currently, Agora offers the [Contoso Supermarket](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/) retail industry experience. Contoso Supermarket includes everything needed to deploy, configure and use a realistic sample point-of-sale application including CI/CD, observability, security, and more.
 
 ## What is required to deploy Agora?
 
-Agora deployment requires an Azure service principal with Contributor or Owner role-based access control (RBAC) on an Azure subscription and resource group. You can deploy Agora using Azure Bicep or the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview). The service principal is required to run the automation scripts that deploy and configure Agora features. You can view how the service principal is used by exploring the Agora code on our [public GitHub repository](https://github.com/microsoft/azure_arc).
+Agora deployment requires an Azure service principal with Contributor or Owner role-based access control (RBAC) on an Azure subscription and resource group. You can deploy Agora using Azure Bicep or the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview). The service principal is required to run the automation scripts that deploy and configure Agora features. You can view how the service principal is used by exploring the Agora code on our [public GitHub repository](https://github.com/microsoft/azure_arc).
 
 ## What Azure regions can Agora be deployed to?
 
@@ -30,12 +29,6 @@ Agora can be deployed to the following regions:
 - West US 2
 - North Europe
 - West Europe
-- France Central
-- UK South
-- Australia East
-- Japan East
-- Korea Central
-- Southeast Asia
 
 ## What are the costs for using Agora?
 
@@ -43,7 +36,7 @@ Agora incurs normal Azure consumption charges for various Azure resources such a
 
 - [Agora Contoso Supermarket cost estimate](https://aka.ms/AgoraContosoSupermarketCostEstimate)
 
-## Where can I go if I have trouble deploying or using ArcBox?
+## Where can I go if I have trouble deploying or using Agora?
 
 Agora has a [dedicated page for troubleshooting](https://aka.ms/AgoraTroubleshooting) that you can review for common issues.
 

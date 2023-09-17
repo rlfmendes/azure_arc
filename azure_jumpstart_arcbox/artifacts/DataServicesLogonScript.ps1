@@ -28,6 +28,7 @@ az login --service-principal --username $Env:spnClientID --password $Env:spnClie
 Write-Header "Installing Azure CLI extensions"
 az config set extension.use_dynamic_install=yes_without_prompt
 # Installing Azure CLI extensions
+az extension add --name connectedk8s --version 1.3.17
 az extension add --name arcdata --system
 az -v
 
@@ -98,7 +99,7 @@ az k8s-extension create --name arc-data-services `
                         --resource-group $Env:resourceGroup `
                         --auto-upgrade false `
                         --scope cluster `
-                        --version 1.18.0 `
+                        --version 1.22.0 `
                         --release-namespace arc `
                         --config Microsoft.CustomLocation.ServiceAccount=sa-bootstrapper
 
@@ -238,5 +239,8 @@ if(-not $ArcServersLogonScript) {
 
 # Removing the LogonScript Scheduled Task so it won't run on next reboot
 Write-Header "Removing Logon Task"
-Unregister-ScheduledTask -TaskName "DataServicesLogonScript" -Confirm:$false
+if ($null -ne (Get-ScheduledTask -TaskName "DataServicesLogonScript" -ErrorAction SilentlyContinue)) {
+    Unregister-ScheduledTask -TaskName "DataServicesLogonScript" -Confirm:$false
+}
+
 Start-Sleep -Seconds 5

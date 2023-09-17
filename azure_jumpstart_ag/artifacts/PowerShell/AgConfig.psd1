@@ -52,6 +52,7 @@
     # PowerShell modules
     PowerShellModules       = @(
         'Az.ConnectedKubernetes'
+        'Az.KubernetesConfiguration'
         'Az.Kusto'
     )
 
@@ -69,7 +70,7 @@
         'kubectx',
         'putty.install',
         'kubernetes-helm',
-        'dotnetcore-3.1-sdk',
+        'dotnet-sdk',
         'zoomit',
         'openssl.light',
         'mqtt-explorer',
@@ -228,7 +229,7 @@
         ProdURL    = "http://localhost:3000"
         Dashboards = @{
             "grafana.com" = @() # Dashboards from https://grafana.com/grafana/dashboards
-            "custom"      = @('freezer-monitoring','node-exporter-full','cluster-global') # Dashboards from https://github.com/microsoft/azure_arc/tree/jumpstart_ag/azure_jumpstart_ag/artifacts/monitoring
+            "custom"      = @('freezer-monitoring','node-exporter-full','cluster-global') # Dashboards from https://github.com/microsoft/azure_arc/tree/main/azure_jumpstart_ag/artifacts/monitoring
         }
     }
 

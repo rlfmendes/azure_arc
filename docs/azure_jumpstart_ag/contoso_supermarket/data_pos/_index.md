@@ -4,7 +4,7 @@ weight: 100
 toc_hide: true
 ---
 
-# Contoso Supermarket data pipeline and reporting across cloud and edge - Store orders
+# Data pipeline and reporting across cloud and edge for store orders
 
 ## Overview
 
@@ -24,7 +24,7 @@ Contoso supports dashboard reports for the PoS application analytics and monitor
 
 ## Manually import dashboards
 
-> __NOTE: If you used the [Azure Developer CLI (azd) method](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/deployment/_index.md#deployment-via-azure-developer-cli-experimental) to deploy the Contoso Supermarket scenario, you may skip this section as these reports are automatically imported for you during the automated deployment.__
+> __NOTE: If you used the [Azure Developer CLI (azd) method](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/deployment/#deployment-via-azure-developer-cli) to deploy the Contoso Supermarket scenario, you may skip this section as these reports are automatically imported for you during the automated deployment.__
 
 Follow the below steps in order to view the PoS Orders dashboard reports you will need to import these into ADX.
 
@@ -34,7 +34,7 @@ Follow the below steps in order to view the PoS Orders dashboard reports you wil
 
 - Copy these ADX dashboards report JSON files on your local machine in a temporary folder to import into ADX dashboards. Alternatively, you can log in to ADX Dashboards directly on the Client VM.
 
-  > __NOTE: Depending the account being used to log in to ADX portal, Azure AD tenant of that account may have conditional access policies enabled and might prevent log in to ADX Dashboards from the Client VM as this VM is not managed by your organization.__
+  > __NOTE: Depending on the account being used to log in to the ADX portal, the Azure AD tenant of that account may have conditional access policies enabled to allow access only from corporate-managed devices (for example managed by Microsoft Intune) and might prevent login to ADX Dashboards from the Client VM as this VM is not managed by your organization.__
 
 - On your local machine open the browser of your choice OR on the Client VM open the Edge browser and log in to [ADX Dashboards](https://dataexplorer.azure.com/). Use the same user account that you deployed Jumpstart Agora in your subscription. Failure to use the same account will prevent access to the ADX Orders database to generate reports.
 
@@ -57,6 +57,8 @@ Follow the below steps in order to view the PoS Orders dashboard reports you wil
 - By default, there is no data available in the ADX Orders database to display in the report after deployment. Click Save to save the dashboard report in ADX.
 
   ![Screenshot showing the empty data in orders dashboard report](./img/adx_orders_report_empty_data.png)
+
+  > __NOTE: Depending on the type of user account being used to access ADX dashboards, you might have issues accessing data in the _Orders_ database in the ADX cluster with an error _User principal 'msauser=xyz@abc.com' is not authorized to read database 'Orders'_. If you experience this access issue, refer to [Jumpstart Agora - Contoso Supermarket scenario troubleshooting](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/troubleshooting#user-principal-is-not-authorized-to-read-database-orders) guide to troubleshoot and address this access issue__.
 
 ## Generate sample data using Data Emulator
 
@@ -106,7 +108,7 @@ By default there is no data available in Cosmos DB database after the deployment
 
 - In the ADX Portal, under Dashboards, open the PoS Orders report and set the time range for "_Last 30 minutes_", and refresh the report to see data.
 
-> __NOTE: As the Cloud Sync service performs the sync in the backend, it might take a few minutes for orders to show up in ADX.__
+  > __NOTE: As the Cloud Sync service performs the sync in the backend, it might take a few minutes for orders to show up in ADX.__
 
   ![Screenshot showing the PoS Chicago dashboard report](./img/pos_chicago_customer_report.png)
 
@@ -116,11 +118,4 @@ By default there is no data available in Cosmos DB database after the deployment
 
 ## Next steps
 
-Use the following guides to explore different use cases of Contoso Supermarket in Jumpstart Agora.
-
-- [PoS](https://placeholder)
-- [Freezer Monitor](https://placeholder)
-- [CI/CD](https://placeholder)
-- [Basic GitOps](https://placeholder)
-- [Analytics](https://analytics)
-- [Troubleshooting](https://troubleshooting)
+Now that you have completed the first data pipeline scenario, it's time to continue to the next scenario, [Data pipeline and reporting across cloud and edge for sensor telemetry](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/freezer_monitor/).

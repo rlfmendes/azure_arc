@@ -19,7 +19,7 @@ By the end of the guide, you will have an Azure VM **JS-Client** installed with 
     git clone https://github.com/microsoft/azure_arc.git
     ```
 
-- [Install or update Azure CLI to version 2.42.0 and above](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest). Use the below command to check your current installed version.
+- [Install or update Azure CLI to version 2.49.0 and above](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest). Use the below command to check your current installed version.
 
     ```shell
     az --version
@@ -105,7 +105,19 @@ To get familiar with the automation and deployment flow read the following expla
 
     2. Set local OS environment variables
 
-## Deployment
+## Deployment Option 1: Azure portal
+
+- Click the <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fazure_arc%2Fmain%2Fazure_arc_sqlsrv_jumpstart%2Fazure%2Fwindows%2Fdefender_sql%2Farm_template%2Fazuredeploy.json" target="_blank"><img src="https://aka.ms/deploytoazurebutton"/></a> button and enter values for the the ARM template parameters.
+
+  ![Screenshot showing Azure portal deployment of Jumpstart scenario](./portaldeploy.png)
+
+  ![Screenshot showing Azure portal deployment creation of Jumpstart scenario](./portaldeploy-create.png)
+
+  ![Screenshot showing Azure portal deployment progress of Jumpstart scenario](./portaldeployinprogress.png)
+
+  ![Screenshot showing Azure portal deployment completion of Jumpstart scenario](./portaldeploymentcomplete.png)
+
+## Deployment Option 2: ARM template with Azure CLI
 
 As mentioned, this deployment will use an ARM Template. You will deploy a single template that creates all the Azure resources in a single resource group as well as onboarding the nested Hyper-V guest SQL Server VM to Azure Arc.
 
@@ -146,6 +158,8 @@ As mentioned, this deployment will use an ARM Template. You will deploy a single
     --template-uri https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_sqlsrv_jumpstart/azure/windows/defender_sql/arm_template/azuredeploy.json \
     --parameters azuredeploy.parameters.json
     ```
+
+    > **NOTE: If you receive an error message stating that the requested VM size is not available in the desired location (as an example: 'Standard_D8s_v3'), it means that there is currently a capacity restriction for that specific VM size in that particular region. Capacity restrictions can occur due to various reasons, such as high demand or maintenance activities. Microsoft Azure periodically adjusts the available capacity in each region based on usage patterns and resource availability. To continue deploying this scenario, please try to re-run the deployment using another region.**
 
 - Once Azure resources have been provisioned you will be able to see them in Azure portal.
 
@@ -255,7 +269,12 @@ Please note it may take some time to show this status in the Azure portal, but s
 
   ![Screenshot showing Defender for SQL test scripts](./defender-sql-testing-script.png)
 
-- Please note once in a while these test execution may fails randomly. If you don't find these alerts, login to nested SQL VM in Hyper-V and execute test script manually as show below.
+- Please note once in a while these test execution may fails randomly. If you don't find these alerts, login to nested SQL VM in Hyper-V and execute test script manually as show below. Following are the credentials to login to nested SQL Server VM.
+
+  ```text
+  Username: Administrator
+  Password: ArcDemo123!!
+  ```
 
   ![Screenshot showing manual execution of the test scripts](./manual-brute-force-test.png)
 

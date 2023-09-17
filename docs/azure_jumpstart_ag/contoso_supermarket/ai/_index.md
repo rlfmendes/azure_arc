@@ -1,4 +1,10 @@
-# Running AI at the Edge
+---
+type: docs
+weight: 100
+toc_hide: true
+---
+
+# Enabling AI at the Edge & Software configurations rollout with basic GitOps flow
 
 ## Overview
 
@@ -12,11 +18,11 @@ Contoso has also adopted GitOps methodologies so they can enable their DevOps te
 
 Contoso has four Kubernetes environments for their application rollout process (Dev, Staging, Canary, and Production), each environment is represented in their GitHub repository as a separate branch to allow developers to develop, test, and ship features and fixes in a controlled manner across each environment.
 
-   ![Screenshot showing the Contoso Supermarket's virtualization stack](./img/ag_aks_clusters.png)
+  ![Screenshot showing the Contoso Supermarket's virtualization stack](./img/ag_aks_clusters.png)
 
 In each cluster, a queue monitoring frontend service is deployed to allow store managers to monitor the checkout queues and leverages the power of AI to detect the number of users in a certain queue so they can take immediate action to enhance the customers' checkout experience.
 
-   ![Screenshot showing the Contoso Supermarket's queue monitoring service](./img/ai_diagram.png)
+  ![Screenshot showing the Contoso Supermarket's queue monitoring service](./img/ai_diagram.png)
 
 Contoso's DevOps team has adopted GitOps methodologies which allows them to use Git as the single source of truth for managing infrastructure and application deployments. It involves declarative definitions of infrastructure and application configurations, which are stored in Git repositories. The GitOps pipeline automatically detects any changes made to the repositories and triggers the necessary actions to deploy the changes to the target environments.
 
@@ -100,7 +106,7 @@ Before starting to code this new feature, it is useful to take a look at how Con
 
 Contoso's DevOps team has received a request from the _Chicago_ store managers that they need the "Live View" feature enabled in their store as their queues are getting longer throughout peak hours throughout the day.
 
-- Connect to the Client VM _Ag-VM-Client_ using the instructions in the [Deployment Guide](https://github.com/microsoft/azure_arc/blob/jumpstart_ag/docs/azure_jumpstart_ag/contoso_supermarket/deployment/_index.md#connecting-to-the-agora-client-virtual-machine).
+- Connect to the Client VM _Ag-VM-Client_ using the instructions in the [deployment guide](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/deployment/#connecting-to-the-agora-client-virtual-machine).
 
 - Open VSCode from the desktop shortcut.
 
@@ -122,7 +128,7 @@ Contoso's DevOps team has received a request from the _Chicago_ store managers t
 
     ![Screenshot showing the operating system for the dev container](./img/vscode_dev_container_os.png)
 
-    ![Screenshot showing the operating system creation for the dev container](./img/vscode_dev_container_os_create.png)
+    ![Screenshot showing the jammy ubuntu flavor for the dev container](./img/vscode_dev_container_ubuntu_flavor.png)
 
 - No need for any additional features to install, so click _Ok_.
 
@@ -130,11 +136,11 @@ Contoso's DevOps team has received a request from the _Chicago_ store managers t
 
 - Click on _Trust folder and continue_, now you can see the cloned repository opened in VSCode, in the _Ubuntu_ dev container.
 
-    ![Screenshot showing the trust folder prompt in VSCode](./img/vscode_dev_container_pos_app.png)
-
     ![Screenshot showing the cloned repository opened in the dev container](./img/vscode_dev_container_trust_folder.png)
 
-- Click on the GitHub icon in the VSCode toolbar, click on _Manage Unsafe Repositories_, and select the _jumpstart-agora-apps_ repository to include the repository to the allow list.
+    ![Screenshot showing the trust folder prompt in VSCode](./img/vscode_dev_container_pos_app.png)
+
+- Click on the _Source Control_ icon in the VSCode toolbar, click on _Manage Unsafe Repositories_, and select the _jumpstart-agora-apps_ repository to include the repository to the allow list.
 
     ![Screenshot showing the trust repository prompt in VSCode](./img/vscode_dev_container_trust_repository.png)
 
@@ -180,7 +186,7 @@ Contoso's DevOps team has also received a request from the _Seattle_ store manag
 
     ![Screenshot showing switching to the production branch](./img/vscode_production_branch.png)
 
-- Navigate to the _contoso_supermarket/operations/contoso_supermarket/releases/contosopos/production/seattle.yaml file. You can see that the "Holiday Banner" feature is disabled.
+- Navigate to the _contoso_supermarket/operations/contoso_supermarket/releases/contosopos/production/seattle.yaml_ file. You can see that the "Holiday Banner" feature is disabled.
 
     ![Screenshot showing the navbar.html file](./img/vscode_production_holiday_banner_disabled.png)
 
@@ -208,11 +214,4 @@ Contoso's DevOps team has also received a request from the _Seattle_ store manag
 
 ## Next Steps
 
-Use the following guides to explore different use cases of Contoso Supermarket in Jumpstart Agora.
-
-- [PoS](https://placeholder)
-- [Freezer Monitor](https://placeholder)
-- [CI/CD](https://placeholder)
-- [Basic GitOps](https://placeholder)
-- [Analytics](https://analytics)
-- [Troubleshooting](https://troubleshooting)
+In the next scenario, learn how Contoso Supermarket are streamlining the [Software Delivery Process using CI/CD](https://azurearcjumpstart.io/azure_jumpstart_ag/contoso_supermarket/ci_cd/).

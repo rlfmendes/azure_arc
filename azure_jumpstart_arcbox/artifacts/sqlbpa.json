@@ -3,19 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "workspaceName": {
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Name of the Log Analytics workspace to use."
             }
         },
         "vmName": {
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "The name of the virtual machine."
             }
         },
         "arcSubscriptionId": {
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "The name of the virtual machine."
             }
@@ -126,17 +126,6 @@
                     "contentVersion": "1.0.0.0",
                     "resources": [
                         {
-                            "type": "Microsoft.HybridCompute/machines/extensions",
-                            "apiVersion": "2021-12-10-preview",
-                            "name": "[format('{0}/AzureMonitorWindowsAgent', parameters('vmName'))]",
-                            "location": "[variables('location')]",
-                            "properties": {
-                                "publisher": "Microsoft.Azure.Monitor",
-                                "type": "AzureMonitorWindowsAgent",
-                                "autoUpgradeMinorVersion": true
-                            }
-                        },
-                        {
                             "type": "Microsoft.Insights/dataCollectionRuleAssociations",
                             "apiVersion": "2021-09-01-preview",
                             "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('vmName'))]",
@@ -155,11 +144,11 @@
     ],
     "outputs": {
         "dataCollectionEndpointId": {
-            "type": "String",
+            "type": "string",
             "value": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dataCollectionEndpointName'))]"
         },
         "dataCollectionRuleId": {
-            "type": "String",
+            "type": "string",
             "value": "[resourceId('Microsoft.Insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
         }
     }

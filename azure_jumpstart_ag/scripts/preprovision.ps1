@@ -1,3 +1,32 @@
+########################################################################
+# Connect to Azure
+########################################################################
+
+Write-Host "Connecting to Azure..."
+
+# Install Azure module if not already installed
+if (-not (Get-Command -Name Get-AzContext)) {
+    Write-Host "Installing Azure module..."
+    Install-Module -Name Az -AllowClobber -Scope CurrentUser -ErrorAction Stop
+}
+
+# If not signed in, run the Connect-AzAccount cmdlet
+if (-not (Get-AzContext)) {
+    Write-Host "Logging in to Azure..."
+    If (-not (Connect-AzAccount -SubscriptionId $env:AZURE_SUBSCRIPTION_ID -ErrorAction Stop)){
+        Throw "Unable to login to Azure. Please check your credentials and try again."
+    }
+}
+
+# Write-Host "Getting Azure Tenant Id..."
+$tenantId = (Get-AzSubscription -SubscriptionId $env:AZURE_SUBSCRIPTION_ID).TenantId
+
+# Write-Host "Setting Azure context..."
+$context = Set-AzContext -SubscriptionId $env:AZURE_SUBSCRIPTION_ID -Tenant $tenantId -ErrorAction Stop
+
+# Write-Host "Setting az subscription..."
+$azLogin = az account set --subscription $env:AZURE_SUBSCRIPTION_ID
+
 
 ########################################################################
 # Check for available capacity in region
@@ -54,10 +83,33 @@ Function Get-AzAvailableLocations ($location, $skuFriendlyNames, $minCores = 0) 
 
     $usableLocations
 }
+
+Function Get-AzAvailablePublicIpAddress ($location, $subscriptionId, $minPublicIP = 0) {
+    
+    $accessToken = az account get-access-token --query accessToken -o tsv
+    $headers = @{
+        "Authorization" = "Bearer $accessToken"
+    }
+
+    $uri = "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Network/locations/$location/usages?api-version=2023-02-01"
+
+    $publicIpCount = (Get-AzPublicIpAddress | where-object {$_.location -eq $location} | measure-object).count
+    $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+
+    $limit = ($response.value | where-object { $_.name.value -eq "PublicIPAddresses"}).limit
+
+    $availableIP = $limit - $publicIpCount
+
+    $availableIP
+
+}
+
 #endregion Functions
 
 $location = $env:AZURE_LOCATION
+$subscriptionId = $env:AZURE_SUBSCRIPTION_ID
 $minCores = 32
+$minPublicIP = 10
 $skuFriendlyNames = "Standard DSv5 Family vCPUs|Total Regional vCPUs"
 
 Write-Host "`nChecking for available capacity in $location region..."
@@ -80,23 +132,27 @@ If ($available.usableLocation -contains $false) {
     Throw $message
 
 } else {
-    Write-Host "`n`u{2705} There is enough VM capacity in the $location region to deploy the Jumpstart environment.`n"
-}
+    $availableIP = Get-AzAvailablePublicIpAddress -location $location -subscriptionId $subscriptionId -minPublicIP $minPublicIP
 
+    If ($availableIP -le $minPublicIP) {
+        $requiredIp = $minPublicIP - $availableIP
+        Write-Host "`n`u{274C} There is not enough Public IP in the $location region to deploy the Jumpstart environment. Need addtional $requiredIp Public IP." -ForegroundColor Red
+
+        $message = "Not enough capacity in $location region."
+        Throw $message
+    } else {
+        Write-Host "`n`u{2705} There is enough VM and Public IP capacity in the $location region to deploy the Jumpstart environment.`n"
+    }
+}
 
 ########################################################################
 # Get Windows Admin Username and Password
 ########################################################################
-$JS_WINDOWS_ADMIN_USERNAME = 'arcdemo'
+$JS_WINDOWS_ADMIN_USERNAME = 'agora'
 if ($promptOutput = Read-Host "Enter the Windows Admin Username [$JS_WINDOWS_ADMIN_USERNAME]") { $JS_WINDOWS_ADMIN_USERNAME = $promptOutput }
 
 # set the env variable
-azd env set JS_WINDOWS_ADMIN_USERNAME $JS_WINDOWS_ADMIN_USERNAME
-
-# The user will be prompted for this by azd so we can maintain the security of the password.
-# $JS_WINDOWS_ADMIN_PASSWORD = Read-Host "Enter the Windows Admin Password (hint: ArcPassword123!! - 12 character minimum)" -AsSecureString
-
-# azd env set JS_WINDOWS_ADMIN_PASSWORD $JS_WINDOWS_ADMIN_PASSWORD
+azd env set JS_WINDOWS_ADMIN_USERNAME -- $JS_WINDOWS_ADMIN_USERNAME
 
 
 ########################################################################
@@ -106,7 +162,7 @@ $JS_RDP_PORT = '3389'
 If ($env:JS_RDP_PORT) {
     $JS_RDP_PORT = $env:JS_RDP_PORT
 }
-if ($promptOutput = Read-Host "Enter the RDP Port for remote connection [$JS_RDP_PORT]") { $JS_RDP_PORT = $promptOutput }
+if ($promptOutput = Read-Host "Enter the RDP Port for remote desktop connection [$JS_RDP_PORT]") { $JS_RDP_PORT = $promptOutput }
 
 # set the env variable
 azd env set JS_RDP_PORT $JS_RDP_PORT
@@ -117,10 +173,13 @@ azd env set JS_RDP_PORT $JS_RDP_PORT
 ########################################################################
 $JS_GITHUB_USER = $env:JS_GITHUB_USER
 
-if ($promptOutput = Read-Host "Enter your GitHub user name [$JS_GITHUB_USER]") { $JS_GITHUB_USER = $promptOutput }
+$defaultGhUser = ""
+If ($JS_GITHUB_USER) { $defaultGhUser = " [$JS_GITHUB_USER]"}
+
+if ($promptOutput = Read-Host "Enter your GitHub user name$defaultGhUser") { $JS_GITHUB_USER = $promptOutput }
 
 # set the env variable
-azd env set JS_GITHUB_USER $JS_GITHUB_USER
+azd env set JS_GITHUB_USER -- $JS_GITHUB_USER
 
 
 ########################################################################
@@ -128,10 +187,13 @@ azd env set JS_GITHUB_USER $JS_GITHUB_USER
 ########################################################################
 $JS_GITHUB_PAT = $env:JS_GITHUB_PAT
 
-if ($promptOutput = Read-Host "Enter your GitHub Personal Access Token (PAT) [$JS_GITHUB_PAT]") { $JS_GITHUB_PAT = $promptOutput }
+$defaultPAT = ""
+If ($JS_GITHUB_PAT) { $defaultPAT = " [$JS_GITHUB_PAT]"}
+
+if ($promptOutput = Read-Host "Enter your GitHub Personal Access Token (PAT)$defaultPAT") { $JS_GITHUB_PAT = $promptOutput }
 
 # set the env variable
-azd env set JS_GITHUB_PAT $JS_GITHUB_PAT
+azd env set JS_GITHUB_PAT -- $JS_GITHUB_PAT
 
 
 ########################################################################
@@ -151,25 +213,15 @@ $JS_SSH_RSA_PUBLIC_KEY = get-content "$file.pub"
 $JS_SSH_RSA_PUBLIC_KEY = $JS_SSH_RSA_PUBLIC_KEY.Replace("\", "\\")
 
 # set the env variable
-azd env set JS_SSH_RSA_PUBLIC_KEY $JS_SSH_RSA_PUBLIC_KEY
+azd env set JS_SSH_RSA_PUBLIC_KEY -- $JS_SSH_RSA_PUBLIC_KEY
 
 
 ########################################################################
 # Create Azure Service Principal
 ########################################################################
 Write-Host "Creating Azure Service Principal..."
-# Install Azure module if not already installed
-if (-not (Get-Command -Name Get-AzContext)) {
-    Write-Host "Installing Azure module..."
-    Install-Module -Name Az -AllowClobber -Scope CurrentUser
-}
 
-# If not signed in, run the Connect-AzAccount cmdlet
-if (-not (Get-AzContext)) {
-    Connect-AzAccount
-}
-
-$user = (get-azcontext).Account.Id.split("@")[0]
+$user = $context.Account.Id.split("@")[0]
 $uniqueSpnName = "$user-jumpstart-spn-$(Get-Random -Minimum 1000 -Maximum 9999)"
 try {
     $spn = New-AzADServicePrincipal -DisplayName $uniqueSpnName -Role "Owner" -Scope "/subscriptions/$($env:AZURE_SUBSCRIPTION_ID)" -ErrorAction Stop
@@ -191,7 +243,6 @@ $SPN_CLIENT_SECRET = $spn.PasswordCredentials.SecretText
 $SPN_TENANT_ID = (Get-AzContext).Tenant.Id
 
 # Set environment variables
-azd env set SPN_CLIENT_ID $SPN_CLIENT_ID
-azd env set SPN_CLIENT_SECRET $SPN_CLIENT_SECRET
-azd env set SPN_TENANT_ID $SPN_TENANT_ID
-
+azd env set SPN_CLIENT_ID -- $SPN_CLIENT_ID
+azd env set SPN_CLIENT_SECRET -- $SPN_CLIENT_SECRET
+azd env set SPN_TENANT_ID -- $SPN_TENANT_ID
