@@ -282,9 +282,9 @@ Invoke-Command -VMName $VMnames -Credential $Credentials -ScriptBlock {
     Write-Host "INFO: Fetching latest AKS Edge Essentials install file on $hostname." -ForegroundColor Gray
 
     if ($using:kubernetesDistribution -eq "k8s") {
-        Invoke-WebRequest "https://aka.ms/aks-edge/${using:kubernetesDistribution}-msi" -OutFile $deploymentFolder\AKSEEK8s.msi
+        Invoke-WebRequest "https://rmstgacct1.blob.core.windows.net/aksee/AksEdge-K8s-1.27.6.msi?sp=r&st=2024-01-26T02:18:51Z&se=2024-02-01T10:18:51Z&sv=2022-11-02&sr=b&sig=2m4a4l%2F8MDPSoOXIiaWCSFqCKg01KGSlVWUr4enQtx0%3D" -OutFile $deploymentFolder\AKSEEK8s.msi
     } else {
-        Invoke-WebRequest "https://aka.ms/aks-edge/${using:kubernetesDistribution}-msi" -OutFile $deploymentFolder\AKSEEK3s.msi
+        Invoke-WebRequest "https://rmstgacct1.blob.core.windows.net/aksee/AksEdge-K3s-1.27.6.msi?sp=r&st=2024-01-26T02:18:02Z&se=2024-02-02T10:18:02Z&sv=2022-11-02&sr=b&sig=ASJcJ4eoyWl9chWXOkO%2BT2fPcY6%2BXFDKq7LJcEWpPZw%3D" -OutFile $deploymentFolder\AKSEEK3s.msi
     }
 
     # Fetching required GitHub artifacts from Jumpstart repository
