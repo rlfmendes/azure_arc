@@ -28,7 +28,8 @@
         githubAPI          = 'https://api.github.com'
         grafana            = 'https://api.github.com/repos/grafana/grafana/releases/latest'
         azurePortal        = 'https://portal.azure.com'
-        aksEEk3s           = 'https://aka.ms/aks-edge/k3s-msi'
+        #aksEEk3s           = 'https://aka.ms/aks-edge/k3s-msi'
+        aksEEk3s           = "https://rmstgacct1.blob.core.windows.net/aksee/AksEdge-K3s-1.27.6.msi?sp=r&st=2024-01-26T02:18:02Z&se=2024-02-02T10:18:02Z&sv=2022-11-02&sr=b&sig=ASJcJ4eoyWl9chWXOkO%2BT2fPcY6%2BXFDKq7LJcEWpPZw%3D"
         nginx              = 'https://kubernetes.github.io/ingress-nginx'
         prometheus         = 'https://prometheus-community.github.io/helm-charts'
         vcLibs             = 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx'
