@@ -26,7 +26,9 @@ Start-Transcript -Path $logsFolder\AKSEEBootstrap.log
 ##############################################################
 $githubAPIUrl = 'https://api.github.com'
 $azurePortalUrl = 'https://portal.azure.com'
-$aksEEk3sUrl = 'https://aka.ms/aks-edge/k3s-msi'
+#$aksEEk3sUrl = 'https://aka.ms/aks-edge/k3s-msi'
+
+$aksEEk3sUrl = "https://rmstgacct1.blob.core.windows.net/aksee/AksEdge-K3s-1.27.6.msi?sp=r&st=2024-01-26T02:18:02Z&se=2024-02-02T10:18:02Z&sv=2022-11-02&sr=b&sig=ASJcJ4eoyWl9chWXOkO%2BT2fPcY6%2BXFDKq7LJcEWpPZw%3D"
 
 $websiteUrls = @(
     $githubAPIUrl,
