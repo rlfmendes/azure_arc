@@ -56,6 +56,8 @@ param L1VMMemoryStartupInMB int = 57344
 
 param AKSEEMemoryInMB int = 32768
 
+param AKSEEDataSizeInGB int = 48
+
 var encodedPassword = base64(windowsAdminPassword)
 var bastionName = 'AKS-EE-Full-Bastion'
 var publicIpAddressName = deployBastion == false ? '${vmName}-PIP' : '${bastionName}-PIP'
@@ -159,7 +161,7 @@ resource vmBootstrap 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' =
       fileUris: [
         uri(templateBaseUrl, 'artifacts/Bootstrap.ps1')
       ]
-      commandToExecute: 'powershell.exe -ExecutionPolicy Bypass -File Bootstrap.ps1 -adminUsername ${windowsAdminUsername} -adminPassword ${encodedPassword} -spnClientId ${spnClientId} -spnClientSecret ${spnClientSecret} -spnTenantId ${spnTenantId} -spnAuthority ${spnAuthority} -subscriptionId ${subscription().subscriptionId} -resourceGroup ${resourceGroup().name} -azureLocation ${location} -templateBaseUrl ${templateBaseUrl} -githubAccount ${githubAccount} -githubBranch ${githubBranch} -kubernetesDistribution ${kubernetesDistribution} -L1VMMemoryStartupInMB ${L1VMMemoryStartupInMB} -AKSEEMemoryInMB ${AKSEEMemoryInMB}'
+      commandToExecute: 'powershell.exe -ExecutionPolicy Bypass -File Bootstrap.ps1 -adminUsername ${windowsAdminUsername} -adminPassword ${encodedPassword} -spnClientId ${spnClientId} -spnClientSecret ${spnClientSecret} -spnTenantId ${spnTenantId} -spnAuthority ${spnAuthority} -subscriptionId ${subscription().subscriptionId} -resourceGroup ${resourceGroup().name} -azureLocation ${location} -templateBaseUrl ${templateBaseUrl} -githubAccount ${githubAccount} -githubBranch ${githubBranch} -kubernetesDistribution ${kubernetesDistribution} -L1VMMemoryStartupInMB ${L1VMMemoryStartupInMB} -AKSEEMemoryInMB ${AKSEEMemoryInMB} -AKSEEDataSizeInGB ${AKSEEDataSizeInGB}'
     }
   }
 }
