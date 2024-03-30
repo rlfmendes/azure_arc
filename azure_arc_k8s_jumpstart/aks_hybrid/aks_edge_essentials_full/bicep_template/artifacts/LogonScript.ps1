@@ -21,6 +21,7 @@ $kubernetesDistribution = $env:kubernetesDistribution
 $aksEEReleasesUrl = "https://api.github.com/repos/Azure/AKS-Edge/releases"
 $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
+$AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
 
 Write-Header "Executing LogonScript.ps1"
 
@@ -342,6 +343,7 @@ Invoke-Command -VMName "Node1" -Credential $Credentials -ScriptBlock {
         "ClientId-null"               = $using:spnClientId
         "ClientSecret-null"           = $using:spnClientSecret
         "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+        "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
     }
 
     ###################################################
@@ -434,6 +436,7 @@ Invoke-Command -VMName "Node2" -Credential $Credentials -ScriptBlock {
             "Ethernet-Null"               = $AdapterName
             "Ip4Address-null"             = $SiteConfig[$env:COMPUTERNAME].LinuxNodeIp4Address
             "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+            "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
         }
     } else {
         $replacementParams = @{
@@ -449,6 +452,7 @@ Invoke-Command -VMName "Node2" -Credential $Credentials -ScriptBlock {
             "Ethernet-Null"               = $AdapterName
             "Ip4Address-null"             = $SiteConfig[$env:COMPUTERNAME].LinuxNodeIp4Address
             "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+            "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
         }
     }
 

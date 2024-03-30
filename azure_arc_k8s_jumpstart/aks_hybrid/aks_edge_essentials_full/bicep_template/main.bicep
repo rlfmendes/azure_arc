@@ -47,11 +47,14 @@ param kubernetesDistribution string
   'Standard_E20s_v5'
   'Standard_E32s_v5'
 ])
+
 param clientVmSize string = 'Standard_E16s_v5' 
 
 param L1VMMemoryStartupInMB int = 57344 
 
 param AKSEEMemoryInMB int = 32768
+
+param AKSEEDataSizeInGB int = 48
 
 var templateBaseUrl = 'https://raw.githubusercontent.com/${githubAccount}/azure_arc/${githubBranch}/azure_arc_k8s_jumpstart/aks_hybrid/aks_edge_essentials_full/bicep_template/'
 
@@ -83,5 +86,6 @@ module clientVmDeployment 'clientVm/clientVm.bicep' = {
     clientVmSize: clientVmSize 
     L1VMMemoryStartupInMB: L1VMMemoryStartupInMB 
     AKSEEMemoryInMB: AKSEEMemoryInMB
+    AKSEEDataSizeInGB: AKSEEDataSizeInGB
   }
 }

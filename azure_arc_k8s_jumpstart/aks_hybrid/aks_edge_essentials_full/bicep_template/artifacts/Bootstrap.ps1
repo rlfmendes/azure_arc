@@ -14,7 +14,9 @@ param (
     [string]$githubBranch,
     [string]$kubernetesDistribution,
     [uint64]$L1VMMemoryStartupInMB,
-    [int]$AKSEEMemoryInMB
+    [int]$AKSEEMemoryInMB,
+    [int]$AKSEEDataSizeInGB
+
 )
 
 # Inject ARM template parameters as environment variables
@@ -34,6 +36,7 @@ param (
 [System.Environment]::SetEnvironmentVariable('kubernetesDistribution', $kubernetesDistribution, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('L1VMMemoryStartupInMB', $L1VMMemoryStartupInMB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('AKSEEMemoryInMB', $AKSEEMemoryInMB, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('AKSEEDataSizeInGB', $AKSEEDataSizeInGB, [System.EnvironmentVariableTarget]::Machine)
 
 # Create path
 Write-Output "Create deployment path"
