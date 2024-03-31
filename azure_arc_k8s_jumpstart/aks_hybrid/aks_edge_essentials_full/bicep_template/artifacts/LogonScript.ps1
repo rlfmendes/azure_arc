@@ -582,6 +582,11 @@ kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/s
 
 az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id 591802c0-3aa7-4a85-9c19-3f703f117987 --verbose
 
+#Install Kepware
+$kepwareExDemoURI='https://s3.amazonaws.com/downloads.kepware.com/dl/KEPServerEX6-6.15.154.0.exe?AWSAccessKeyId=AKIA6EUSO2UT6RXNL4U3&Expires=1711863634&Signature=2mCkq%2FrRdZIkB9ndysVdXZmPa5A%3D'
+Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile $HOME\Downloads\Kepware.exe -Verbose
+Invoke-Expression -Command "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES"
+
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
 $code = @' 
