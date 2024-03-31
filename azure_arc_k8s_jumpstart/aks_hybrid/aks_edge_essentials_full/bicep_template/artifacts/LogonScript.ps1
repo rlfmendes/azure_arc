@@ -565,6 +565,23 @@ Invoke-Command -VMName $VMnames -Credential $Credentials -ScriptBlock {
         --correlation-id "d009f5dd-dba8-4ac7-bac9-b54ef3a6671a"
 }
 
+# Deploying AIO
+$keyVault = New-AzKeyVault -ResourceGroupName $env:resourceGroup -Name ($env:resourceGroup + "-kv") -Location $env:azureLocation -Verbose
+
+Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $keyVault.ResourceGroupName -ServicePrincipalName $env:SPN_CLIENT_ID -PermissionsToSecrets Get,Set
+
+az login --service-principal -u $env:spnClientID -p $env:spnClientSecret --tenant $env:spnTenantId
+
+$CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/connectedClusters' --resource-group $env:resourceGroup --query '[0].name' -o tsv)
+
+az config set extension.use_dynamic_install=yes_without_prompt
+
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid e528ead7-c38d-4c5e-91ae-7bb76291874d
+
+kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
+
+az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id 591802c0-3aa7-4a85-9c19-3f703f117987 --verbose
+
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
 $code = @' 
