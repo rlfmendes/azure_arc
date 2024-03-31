@@ -568,7 +568,7 @@ Invoke-Command -VMName $VMnames -Credential $Credentials -ScriptBlock {
 # Deploying AIO
 $keyVault = New-AzKeyVault -ResourceGroupName $env:resourceGroup -Name ($env:resourceGroup + "-kv") -Location $env:azureLocation -Verbose
 
-Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $keyVault.ResourceGroupName -ServicePrincipalName $env:SPN_CLIENT_ID -PermissionsToSecrets Get,Set
+Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $keyVault.ResourceGroupName -ServicePrincipalName $env:SPN_CLIENT_ID -PermissionsToSecrets Get,Set,List
 
 az login --service-principal -u $env:spnClientID -p $env:spnClientSecret --tenant $env:spnTenantId
 
@@ -576,7 +576,7 @@ $CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/conn
 
 az config set extension.use_dynamic_install=yes_without_prompt
 
-az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid e528ead7-c38d-4c5e-91ae-7bb76291874d
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid 0ed99c2c-ca82-42c4-b00b-824d65e76ed1
 
 kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
 
