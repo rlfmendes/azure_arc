@@ -582,9 +582,6 @@ kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/s
 
 az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id 591802c0-3aa7-4a85-9c19-3f703f117987 --verbose
 
-az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
-az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
-
 #Install Kepware
 $kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
 Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile $HOME\Downloads\Kepware.exe
@@ -617,7 +614,13 @@ ServerConfigDesktopShortcut=1
 "
 $iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
 
-Invoke-Expression -Command "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234"
+$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h
+
+Start-Sleep -Seconds 180
+
+az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
+az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
+az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault.VaultName --file 'C:\ProgramData\Kepware\KEPServerEX\V6\UA\Server\cert\kepserverex_ua_server.der' -encoding hex --content-type application/x-pem-file
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
