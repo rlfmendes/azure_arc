@@ -614,7 +614,7 @@ ServerConfigDesktopShortcut=1
 "
 $iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
 
-$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h
+invoke-expression "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
 
 Start-Sleep -Seconds 180
 
