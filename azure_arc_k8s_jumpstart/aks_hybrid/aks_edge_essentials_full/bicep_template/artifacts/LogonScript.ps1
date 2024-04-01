@@ -582,10 +582,42 @@ kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/s
 
 az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id 591802c0-3aa7-4a85-9c19-3f703f117987 --verbose
 
+az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
+az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
+
 #Install Kepware
-$kepwareExDemoURI='https://s3.amazonaws.com/downloads.kepware.com/dl/KEPServerEX6-6.15.154.0.exe?AWSAccessKeyId=AKIA6EUSO2UT6RXNL4U3&Expires=1711863634&Signature=2mCkq%2FrRdZIkB9ndysVdXZmPa5A%3D'
-Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile $HOME\Downloads\Kepware.exe -Verbose
-Invoke-Expression -Command "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES"
+$kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
+Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile $HOME\Downloads\Kepware.exe
+
+$iniFileContents="
+[Installation Properties]
+INSTALLDIR=C:\Program Files (x86)\Kepware\KEPServerEX 6
+;
+[Installation Type]
+FullInstallation=0
+;
+[Communication Drivers]
+; Advanced Simulator
+AdvancedSimulator=1
+; Memory Based
+MemoryBased=1
+;
+[Native Client Interfaces]
+;
+[Plug-Ins]
+; Connection Sharing
+ConnectionSharing=1
+;
+[Other]
+; OPC Quick Client
+OPCQuickClient=1
+; Desktop shortcut for Configuration
+ServerConfigDesktopShortcut=1
+;
+"
+$iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
+
+Invoke-Expression -Command "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234"
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
