@@ -568,21 +568,21 @@ Invoke-Command -VMName $VMnames -Credential $Credentials -ScriptBlock {
 }
 
 # Deploying AIO
-$keyVault = New-AzKeyVault -ResourceGroupName $env:resourceGroup -Name ($env:resourceGroup + "-kv") -Location $env:azureLocation -Verbose
+$keyVault = New-AzKeyVault -ResourceGroupName $resourceGroup  -Name ($resourceGroup  + "-kv") -Location $azureLocation -Verbose
 
-Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $keyVault.ResourceGroupName -ServicePrincipalName $env:SPN_CLIENT_ID -PermissionsToSecrets Get,Set,List
+Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $resourceGroup -ServicePrincipalName $spnClientId -PermissionsToSecrets Get,Set,List
 
-az login --service-principal -u $env:spnClientID -p $env:spnClientSecret --tenant $env:spnTenantId
+az login --service-principal -u $spnClientId -p $spnClientSecret --tenant $spnTenantId
 
-$CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/connectedClusters' --resource-group $env:resourceGroup --query '[0].name' -o tsv)
+$CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/connectedClusters' --resource-group $resourceGroup --query '[0].name' -o tsv)
 
 az config set extension.use_dynamic_install=yes_without_prompt
 
-az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectID
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectID
 
 kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
 
-az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id $spnPrincipalId --verbose
+az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $spnClientId --sp-secret $spnClientSecret --subscription $subscriptionId --sp-object-id $spnPrincipalId --verbose
 
 #Install Kepware
 $kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
