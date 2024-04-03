@@ -56,6 +56,10 @@ param AKSEEMemoryInMB int = 32768
 
 param AKSEEDataSizeInGB int = 48
 
+param customLocationsObjectID string
+
+param spnPrincipalId string
+
 var templateBaseUrl = 'https://raw.githubusercontent.com/${githubAccount}/azure_arc/${githubBranch}/azure_arc_k8s_jumpstart/aks_hybrid/aks_edge_essentials_full/bicep_template/'
 
 module networkDeployment 'mgmt/network.bicep' = {
@@ -87,5 +91,7 @@ module clientVmDeployment 'clientVm/clientVm.bicep' = {
     L1VMMemoryStartupInMB: L1VMMemoryStartupInMB 
     AKSEEMemoryInMB: AKSEEMemoryInMB
     AKSEEDataSizeInGB: AKSEEDataSizeInGB
+    customLocationsObjectID: customLocationsObjectID
+    spnPrincipalId: spnPrincipalId
   }
 }

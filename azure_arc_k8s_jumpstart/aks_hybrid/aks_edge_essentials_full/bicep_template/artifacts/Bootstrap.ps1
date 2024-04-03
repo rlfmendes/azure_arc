@@ -37,6 +37,8 @@ param (
 [System.Environment]::SetEnvironmentVariable('L1VMMemoryStartupInMB', $L1VMMemoryStartupInMB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('AKSEEMemoryInMB', $AKSEEMemoryInMB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('AKSEEDataSizeInGB', $AKSEEDataSizeInGB, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('customLocationsObjectID', $customLocationsObjectID, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('spnPrincipalId', $spnPrincipalId, [System.EnvironmentVariableTarget]::Machine)
 
 # Create path
 Write-Output "Create deployment path"

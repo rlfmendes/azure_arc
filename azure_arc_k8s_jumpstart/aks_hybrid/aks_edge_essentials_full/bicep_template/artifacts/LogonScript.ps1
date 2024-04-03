@@ -22,7 +22,8 @@ $aksEEReleasesUrl = "https://api.github.com/repos/Azure/AKS-Edge/releases"
 $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
 $AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
-$customLocationsObjectID = $env:customLocationsObjectID 
+$customLocationsObjectID = $env:customLocationsObjectID
+$spnPrincipalId = $env:$spnPrincipalId
 
 Write-Header "Executing LogonScript.ps1"
 
@@ -577,11 +578,11 @@ $CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/conn
 
 az config set extension.use_dynamic_install=yes_without_prompt
 
-az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid 0ed99c2c-ca82-42c4-b00b-824d65e76ed1
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $env:resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectID
 
 kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
 
-az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id 591802c0-3aa7-4a85-9c19-3f703f117987 --verbose
+az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $env:resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $env:spnClientID --sp-secret $env:spnClientSecret --subscription $env:subscriptionId --sp-object-id $spnPrincipalId --verbose
 
 #Install Kepware
 $kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
