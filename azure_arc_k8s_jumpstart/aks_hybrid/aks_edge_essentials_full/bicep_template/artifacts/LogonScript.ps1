@@ -22,6 +22,7 @@ $aksEEReleasesUrl = "https://api.github.com/repos/Azure/AKS-Edge/releases"
 $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
 $AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
+$customLocationsObjectID = $env:customLocationsObjectID 
 
 Write-Header "Executing LogonScript.ps1"
 
@@ -620,7 +621,7 @@ Start-Sleep -Seconds 180
 
 az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
 az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
-az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault.VaultName --file 'C:\ProgramData\Kepware\KEPServerEX\V6\UA\Server\cert\kepserverex_ua_server.der' -encoding hex --content-type application/x-pem-file
+az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault.VaultName --file 'C:\ProgramData\Kepware\KEPServerEX\V6\UA\Server\cert\kepserverex_ua_server.der' --encoding hex --content-type application/x-pem-file
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
