@@ -23,7 +23,7 @@ $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
 $AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
 $customLocationsObjectID = $env:customLocationsObjectID
-$spnPrincipalId = $spnPrincipalId
+$spnPrincipalId = $env:spnPrincipalId
 
 Write-Header "Executing LogonScript.ps1"
 
