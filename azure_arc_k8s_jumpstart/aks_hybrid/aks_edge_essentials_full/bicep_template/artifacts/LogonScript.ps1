@@ -618,8 +618,6 @@ $iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
 
 $settingsFile = Get-Content "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
 
-$settingsFile.
-
 & "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
 
 az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
