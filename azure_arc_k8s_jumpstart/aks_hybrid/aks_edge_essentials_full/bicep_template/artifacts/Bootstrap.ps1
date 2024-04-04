@@ -15,9 +15,9 @@ param (
     [string]$kubernetesDistribution,
     [uint64]$L1VMMemoryStartupInMB,
     [int]$AKSEEMemoryInMB,
-    [int]$AKSEEDataSizeInGB
-
-)
+    [int]$AKSEEDataSizeInGB,
+    [string] customLocationsObjectID,
+    [string] spnPrincipalId)
 
 # Inject ARM template parameters as environment variables
 [System.Environment]::SetEnvironmentVariable('adminUsername', $adminUsername, [System.EnvironmentVariableTarget]::Machine)
@@ -39,8 +39,7 @@ param (
 [System.Environment]::SetEnvironmentVariable('AKSEEDataSizeInGB', $AKSEEDataSizeInGB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('customLocationsObjectID', $customLocationsObjectID, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('spnPrincipalId', $spnPrincipalId, [System.EnvironmentVariableTarget]::Machine)
-Write-Output $customLocationsObjectID
-Write-Output $spnPrincipalId
+
 # Create path
 Write-Output "Create deployment path"
 $tempDir = "C:\Temp"
