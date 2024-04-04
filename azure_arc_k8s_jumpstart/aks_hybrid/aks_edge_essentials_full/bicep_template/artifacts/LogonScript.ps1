@@ -23,7 +23,7 @@ $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
 $AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
 $customLocationsObjectID = $env:customLocationsObjectID
-$spnPrincipalId = $env:$spnPrincipalId
+$spnPrincipalId = $spnPrincipalId
 
 Write-Header "Executing LogonScript.ps1"
 
@@ -616,13 +616,20 @@ ServerConfigDesktopShortcut=1
 "
 $iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
 
-invoke-expression "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
+$settingsFile = Get-Content "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
 
-Start-Sleep -Seconds 180
+$settingsFile.
+
+& "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
 
 az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
 az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
 az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault.VaultName --file 'C:\ProgramData\Kepware\KEPServerEX\V6\UA\Server\cert\kepserverex_ua_server.der' --encoding hex --content-type application/x-pem-file
+
+### Enable all Kepware endpoints by changing the configuration file and restarting the service
+$settingsFilePath = "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
+((Get-Content $settingsFilePath) -replace ([System.Text.Encoding]::UTF8.GetString([byte[]](0xc2, 0xad))), '') | Set-Content -Path $settingsFilePath -Force
+Restart-Service KEPServerEXV6
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
