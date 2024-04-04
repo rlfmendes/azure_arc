@@ -16,8 +16,8 @@ param (
     [uint64]$L1VMMemoryStartupInMB,
     [int]$AKSEEMemoryInMB,
     [int]$AKSEEDataSizeInGB,
-    [string] customLocationsObjectID,
-    [string] spnPrincipalId)
+    [string] $customLocationsObjectID,
+    [string] $spnPrincipalId)
 
 # Inject ARM template parameters as environment variables
 [System.Environment]::SetEnvironmentVariable('adminUsername', $adminUsername, [System.EnvironmentVariableTarget]::Machine)
