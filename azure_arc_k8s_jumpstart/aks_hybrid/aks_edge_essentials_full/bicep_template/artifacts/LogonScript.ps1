@@ -586,7 +586,8 @@ az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $resourceGroup --k
 
 #Install Kepware
 $kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
-Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile $HOME\Downloads\Kepware.exe
+
+Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile "$HOME\Downloads\Kepware.exe"
 
 $iniFileContents="
 [Installation Properties]
@@ -614,9 +615,7 @@ OPCQuickClient=1
 ServerConfigDesktopShortcut=1
 ;
 "
-$iniFileContents | Out-File -FilePath $HOME\Downloads\KEPServerEX6.ini
-
-$settingsFile = Get-Content "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
+$iniFileContents | Out-File -FilePath "$HOME\Downloads\KEPServerEX6.ini"
 
 & "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
 
