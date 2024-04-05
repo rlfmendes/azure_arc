@@ -22,7 +22,7 @@ $aksEEReleasesUrl = "https://api.github.com/repos/Azure/AKS-Edge/releases"
 $L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
 $AKSEEMemoryInMB = $env:AKSEEMemoryInMB
 $AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
-$customLocationsObjectID = $env:customLocationsObjectID
+$customLocationsObjectId = $env:customLocationsObjectId
 $spnPrincipalId = $env:spnPrincipalId
 
 Write-Header "Executing LogonScript.ps1"
@@ -578,7 +578,7 @@ $CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/conn
 
 az config set extension.use_dynamic_install=yes_without_prompt
 
-az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectID
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectId
 
 kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
 
@@ -617,7 +617,7 @@ ServerConfigDesktopShortcut=1
 "
 $iniFileContents | Out-File -FilePath "$HOME\Downloads\KEPServerEX6.ini"
 
-& "$HOME\Downloads\Kepware.exe /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h"
+& "$HOME\Downloads\Kepware.exe" /qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h
 
 az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
 az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'

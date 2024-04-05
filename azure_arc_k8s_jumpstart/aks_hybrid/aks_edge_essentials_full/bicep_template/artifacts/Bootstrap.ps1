@@ -16,7 +16,7 @@ param (
     [uint64]$L1VMMemoryStartupInMB,
     [int]$AKSEEMemoryInMB,
     [int]$AKSEEDataSizeInGB,
-    [string] $customLocationsObjectID,
+    [string] $customLocationsObjectId,
     [string] $spnPrincipalId)
 
 # Inject ARM template parameters as environment variables
@@ -37,7 +37,7 @@ param (
 [System.Environment]::SetEnvironmentVariable('L1VMMemoryStartupInMB', $L1VMMemoryStartupInMB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('AKSEEMemoryInMB', $AKSEEMemoryInMB, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('AKSEEDataSizeInGB', $AKSEEDataSizeInGB, [System.EnvironmentVariableTarget]::Machine)
-[System.Environment]::SetEnvironmentVariable('customLocationsObjectID', $customLocationsObjectID, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('customLocationsObjectId', $customLocationsObjectId, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('spnPrincipalId', $spnPrincipalId, [System.EnvironmentVariableTarget]::Machine)
 
 # Create path

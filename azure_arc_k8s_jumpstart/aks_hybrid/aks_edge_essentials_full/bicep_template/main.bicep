@@ -56,7 +56,7 @@ param AKSEEMemoryInMB int = 32768
 
 param AKSEEDataSizeInGB int = 48
 
-param customLocationsObjectID string
+param customLocationsObjectId string
 
 param spnPrincipalId string
 
@@ -91,7 +91,7 @@ module clientVmDeployment 'clientVm/clientVm.bicep' = {
     L1VMMemoryStartupInMB: L1VMMemoryStartupInMB 
     AKSEEMemoryInMB: AKSEEMemoryInMB
     AKSEEDataSizeInGB: AKSEEDataSizeInGB
-    customLocationsObjectID: customLocationsObjectID
+    customLocationsObjectId: customLocationsObjectId
     spnPrincipalId: spnPrincipalId
   }
 }
