@@ -626,7 +626,7 @@ az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault
 ### Enable all Kepware endpoints by changing the configuration file and restarting the service
 $settingsFilePath = "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
 ((Get-Content $settingsFilePath) -replace ([System.Text.Encoding]::UTF8.GetString([byte[]](0xc2, 0xad))), '') | Set-Content -Path $settingsFilePath -Force
-Restart-Service KEPServerEXV6
+Restart-Service KEPServerEXV6 -Verbose
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"
