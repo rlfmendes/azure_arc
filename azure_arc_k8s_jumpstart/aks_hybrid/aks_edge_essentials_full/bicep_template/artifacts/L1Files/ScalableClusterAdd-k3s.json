@@ -31,7 +31,7 @@
         "CpuCount": 4,
         "MemoryInMB": MemoryInMB-null,
         "DataSizeInGB": DataSizeInGB-null,
-        "LogSizeInGB":32GB,
+        "LogSizeInGB": 32,
         "Ip4Address": "Ip4Address-null",
         "TimeoutSeconds": 300,
         "TpmPassthrough": false
