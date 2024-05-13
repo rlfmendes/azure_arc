@@ -12,8 +12,12 @@ param (
     [string]$rdpPort,
     [string]$githubAccount,
     [string]$githubBranch,
-    [string]$kubernetesDistribution
-)
+    [string]$kubernetesDistribution,
+    [uint64]$L1VMMemoryStartupInMB,
+    [int]$AKSEEMemoryInMB,
+    [int]$AKSEEDataSizeInGB,
+    [string] $customLocationsObjectId,
+    [string] $spnPrincipalId)
 
 # Inject ARM template parameters as environment variables
 [System.Environment]::SetEnvironmentVariable('adminUsername', $adminUsername, [System.EnvironmentVariableTarget]::Machine)
@@ -30,6 +34,11 @@ param (
 [System.Environment]::SetEnvironmentVariable('githubAccount', $githubAccount, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('githubBranch', $githubBranch, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('kubernetesDistribution', $kubernetesDistribution, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('L1VMMemoryStartupInMB', $L1VMMemoryStartupInMB, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('AKSEEMemoryInMB', $AKSEEMemoryInMB, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('AKSEEDataSizeInGB', $AKSEEDataSizeInGB, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('customLocationsObjectId', $customLocationsObjectId, [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('spnPrincipalId', $spnPrincipalId, [System.EnvironmentVariableTarget]::Machine)
 
 # Create path
 Write-Output "Create deployment path"
@@ -55,7 +64,7 @@ Invoke-WebRequest "https://raw.githubusercontent.com/Azure/arc_jumpstart_docs/ma
 # Installing tools
 workflow ClientTools_01
         {
-            $chocolateyAppList = 'azure-cli,az.powershell,kubernetes-cli,microsoft-edge,azcopy10,kubernetes-helm'
+            $chocolateyAppList = 'azure-cli,az.powershell,kubernetes-cli,microsoft-edge,azcopy10,kubernetes-helm,k9s'
             #Run commands in parallel.
             Parallel 
                 {

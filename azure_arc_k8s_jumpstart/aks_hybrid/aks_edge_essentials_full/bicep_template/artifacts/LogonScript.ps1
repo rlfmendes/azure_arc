@@ -19,6 +19,11 @@ $hypervVMUser = "Administrator"
 $hypervVMPassword = "JS123!!"
 $kubernetesDistribution = $env:kubernetesDistribution
 $aksEEReleasesUrl = "https://api.github.com/repos/Azure/AKS-Edge/releases"
+$L1VMMemoryStartupInMB = $env:L1VMMemoryStartupInMB
+$AKSEEMemoryInMB = $env:AKSEEMemoryInMB
+$AKSEEDataSizeInGB = $env:AKSEEDataSizeInGB
+$customLocationsObjectId = $env:customLocationsObjectId
+$spnPrincipalId = $env:spnPrincipalId
 
 Write-Header "Executing LogonScript.ps1"
 
@@ -178,7 +183,7 @@ foreach ($site in $SiteConfig.GetEnumerator()) {
         # Create a new virtual machine and attach the existing virtual hard disk
         Write-Host "INFO: Creating and configuring $($site.Name) virtual machine." -ForegroundColor Gray
         New-VM -Name $site.Name `
-            -MemoryStartupBytes 24GB `
+            -MemoryStartupBytes  (([uint64]($L1VMMemoryStartupInMB))*1024*1024) `
             -BootDevice VHD `
             -VHDPath $vhd.Path `
             -Generation 2 `
@@ -339,6 +344,8 @@ Invoke-Command -VMName "Node1" -Credential $Credentials -ScriptBlock {
         "TenantId-null"               = $using:spnTenantId
         "ClientId-null"               = $using:spnClientId
         "ClientSecret-null"           = $using:spnClientSecret
+        "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+        "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
     }
 
     ###################################################
@@ -430,6 +437,8 @@ Invoke-Command -VMName "Node2" -Credential $Credentials -ScriptBlock {
             "DnsServer-null"              = $SiteConfig[$env:COMPUTERNAME].DNSClientServerAddress
             "Ethernet-Null"               = $AdapterName
             "Ip4Address-null"             = $SiteConfig[$env:COMPUTERNAME].LinuxNodeIp4Address
+            "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+            "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
         }
     } else {
         $replacementParams = @{
@@ -444,6 +453,8 @@ Invoke-Command -VMName "Node2" -Credential $Credentials -ScriptBlock {
             "DnsServer-null"              = $SiteConfig[$env:COMPUTERNAME].DNSClientServerAddress
             "Ethernet-Null"               = $AdapterName
             "Ip4Address-null"             = $SiteConfig[$env:COMPUTERNAME].LinuxNodeIp4Address
+            "MemoryInMB-null"             = $using:AKSEEMemoryInMB
+            "DataSizeInGB-null"           = $using:AKSEEDataSizeInGB
         }
     }
 
@@ -555,6 +566,67 @@ Invoke-Command -VMName $VMnames -Credential $Credentials -ScriptBlock {
         --tags "Project=jumpstart_azure_arc_servers" "AKSEE=$clusterName"`
         --correlation-id "d009f5dd-dba8-4ac7-bac9-b54ef3a6671a"
 }
+
+# Deploying AIO
+$keyVault = New-AzKeyVault -ResourceGroupName $resourceGroup  -Name ($resourceGroup  + "-kv") -Location $azureLocation -Verbose
+
+Set-AzKeyVaultAccessPolicy -VaultName $keyVault.VaultName -ResourceGroupName $resourceGroup -ServicePrincipalName $spnClientId -PermissionsToSecrets Get,Set,List
+
+az login --service-principal -u $spnClientId -p $spnClientSecret --tenant $spnTenantId
+
+$CONNECTED_CLUSTER=$(az resource list --resource-type 'Microsoft.Kubernetes/connectedClusters' --resource-group $resourceGroup --query '[0].name' -o tsv)
+
+az config set extension.use_dynamic_install=yes_without_prompt
+
+az connectedk8s enable-features -n $CONNECTED_CLUSTER --resource-group $resourceGroup --features cluster-connect custom-locations --custom-locations-oid $customLocationsObjectId
+
+kubectl apply -f https://raw.githubusercontent.com/Azure/AKS-Edge/main/samples/storage/local-path-provisioner/local-path-storage.yaml
+
+az iot ops init --cluster $CONNECTED_CLUSTER --resource-group $resourceGroup --kv-id $keyVault.ResourceId --sp-app-id $spnClientId --sp-secret $spnClientSecret --subscription $subscriptionId --sp-object-id $spnPrincipalId --verbose
+
+#Install Kepware
+$kepwareExDemoURI='https://rmstgacct1.blob.core.windows.net/droppoint/KEPServerEX6-6.15.154.0.exe?sp=r&st=2024-03-31T19:50:10Z&se=2024-05-02T03:50:10Z&spr=https&sv=2022-11-02&sr=b&sig=8DO0gQKBS51oAisUy9gXC3P8V%2FKxzWJtg4yYQTIu4QE%3D'
+
+Invoke-WebRequest -Uri $kepwareExDemoURI -UseBasicParsing -OutFile "$HOME\Downloads\Kepware.exe" -Verbose
+
+$iniFileContents="
+[Installation Properties]
+INSTALLDIR=C:\Program Files (x86)\Kepware\KEPServerEX 6
+;
+[Installation Type]
+FullInstallation=0
+;
+[Communication Drivers]
+; Advanced Simulator
+AdvancedSimulator=1
+; Memory Based
+MemoryBased=1
+;
+[Native Client Interfaces]
+;
+[Plug-Ins]
+; Connection Sharing
+ConnectionSharing=1
+;
+[Other]
+; OPC Quick Client
+OPCQuickClient=1
+; Desktop shortcut for Configuration
+ServerConfigDesktopShortcut=1
+;
+"
+$iniFileContents | Out-File -FilePath "$HOME\Downloads\KEPServerEX6.ini" -Verbose
+
+Start-Process "$HOME\Downloads\Kepware.exe" -ArgumentList "/qn /e ACCEPT_EULA=YES /d ThisIsASecurePassword1234 /s /h" -Wait
+
+az keyvault secret set --name opcuausername --vault-name $keyvault.VaultName --value 'Administrator'
+az keyvault secret set --name opcuapassword --vault-name $keyvault.VaultName --value 'ThisIsASecurePassword1234'
+az keyvault secret set --name 'kepserverex-ua-server-der' --vault-name $keyvault.VaultName --file 'C:\ProgramData\Kepware\KEPServerEX\V6\UA\Server\cert\kepserverex_ua_server.der' --encoding hex --content-type application/x-pem-file
+
+### Enable all Kepware endpoints by changing the configuration file and restarting the service
+$settingsFilePath = "C:\ProgramData\Kepware\KEPServerEX\V6\settings.ini"
+((Get-Content $settingsFilePath) -replace ([System.Text.Encoding]::UTF8.GetString([byte[]](0xc2, 0xad))), '') | Set-Content -Path $settingsFilePath -Force
+Restart-Service KEPServerEXV6 -Verbose
 
 # Changing to Client VM wallpaper
 $imgPath = "C:\Temp\wallpaper.png"

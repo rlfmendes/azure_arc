@@ -50,6 +50,18 @@ param githubAccount string = 'microsoft'
 @description('Target GitHub branch')
 param githubBranch string = 'main'
 
+param clientVmSize string = 'Standard_E16s_v5' 
+
+param L1VMMemoryStartupInMB int = 57344 
+
+param AKSEEMemoryInMB int = 32768
+
+param AKSEEDataSizeInGB int = 48
+
+param customLocationsObjectId string
+
+param spnPrincipalId string
+
 var encodedPassword = base64(windowsAdminPassword)
 var bastionName = 'AKS-EE-Full-Bastion'
 var publicIpAddressName = deployBastion == false ? '${vmName}-PIP' : '${bastionName}-PIP'
@@ -99,7 +111,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   tags: resourceTags
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_E32s_v5'
+      vmSize: '${clientVmSize}'
     }
     storageProfile: {
       osDisk: {
@@ -153,7 +165,7 @@ resource vmBootstrap 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' =
       fileUris: [
         uri(templateBaseUrl, 'artifacts/Bootstrap.ps1')
       ]
-      commandToExecute: 'powershell.exe -ExecutionPolicy Bypass -File Bootstrap.ps1 -adminUsername ${windowsAdminUsername} -adminPassword ${encodedPassword} -spnClientId ${spnClientId} -spnClientSecret ${spnClientSecret} -spnTenantId ${spnTenantId} -spnAuthority ${spnAuthority} -subscriptionId ${subscription().subscriptionId} -resourceGroup ${resourceGroup().name} -azureLocation ${location} -templateBaseUrl ${templateBaseUrl} -githubAccount ${githubAccount} -githubBranch ${githubBranch} -kubernetesDistribution ${kubernetesDistribution}'
+      commandToExecute: 'powershell.exe -ExecutionPolicy Bypass -File Bootstrap.ps1 -adminUsername ${windowsAdminUsername} -adminPassword ${encodedPassword} -spnClientId ${spnClientId} -spnClientSecret ${spnClientSecret} -spnTenantId ${spnTenantId} -spnAuthority ${spnAuthority} -subscriptionId ${subscription().subscriptionId} -resourceGroup ${resourceGroup().name} -azureLocation ${location} -templateBaseUrl ${templateBaseUrl} -githubAccount ${githubAccount} -githubBranch ${githubBranch} -kubernetesDistribution ${kubernetesDistribution} -L1VMMemoryStartupInMB ${L1VMMemoryStartupInMB} -AKSEEMemoryInMB ${AKSEEMemoryInMB} -AKSEEDataSizeInGB ${AKSEEDataSizeInGB} -customLocationsObjectId ${customLocationsObjectId} -spnPrincipalId ${spnPrincipalId}'
     }
   }
 }
