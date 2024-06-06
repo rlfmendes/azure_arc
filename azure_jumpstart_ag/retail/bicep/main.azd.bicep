@@ -23,7 +23,7 @@ param location string = ''
 param namingGuid string = toLower(substring(newGuid(), 0, 5))
 
 @description('Username for Windows account')
-param windowsAdminUsername string = ''
+param windowsAdminUsername string = 'Agora'
 
 @description('Password for Windows account. Password must have 3 of the following: 1 lower case character, 1 upper case character, 1 number, and 1 special character. The value must be between 12 and 123 characters long')
 @minLength(12)
@@ -87,7 +87,10 @@ param acrName string = 'agacr${namingGuid}'
 @description('Override default RDP port using this parameter. Default is 3389. No changes will be made to the client VM.')
 param rdpPort string = '3389'
 
-var templateBaseUrl = 'https://raw.githubusercontent.com/${githubAccount}/azure_arc/${githubBranch}/azure_jumpstart_ag/retail/'
+@description('The agora industry to be deployed')
+param industry string = 'retail'
+
+var templateBaseUrl = 'https://raw.githubusercontent.com/${githubAccount}/azure_arc/${githubBranch}/azure_jumpstart_ag/'
 
 targetScope = 'subscription'
 
@@ -135,8 +138,8 @@ module kubernetesDeployment 'kubernetes/aks.bicep' = {
     spnClientId: spnClientId
     spnClientSecret: spnClientSecret
     location: location
-    acrName: acrName
     sshRSAPublicKey: sshRSAPublicKey
+    acrName: acrName
   }
 }
 
@@ -167,6 +170,7 @@ module clientVmDeployment 'clientVm/clientVm.bicep' = {
     rdpPort: rdpPort
     adxClusterName: adxClusterName
     namingGuid: namingGuid
+    industry: industry
   }
 }
 
