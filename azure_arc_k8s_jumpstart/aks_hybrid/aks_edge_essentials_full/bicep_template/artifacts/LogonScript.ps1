@@ -400,8 +400,11 @@ Write-Host "INFO: Waiting on kubeconfig files took $($elapsedTime.TotalSeconds) 
 # Retrieve join
 Invoke-Command -VMName "Node1" -Credential $Credentials -ScriptBlock {
     $path = "C:\Deployment\ScaleConfigJoin.json"
-    New-AksEdgeScaleConfig -NodeType Linux -ScaleType AddMachine -LinuxNodeIp "172.20.1.51" -outFile $path
-    Start-Sleep 5
+    while(!(Test-Path -Path $path))
+        {
+        New-AksEdgeScaleConfig -NodeType Linux -ScaleType AddMachine -LinuxNodeIp "172.20.1.51" -outFile $path
+        Start-Sleep 5
+        }
     Write-Host "INFO: Node1's ScaleConfigJoin.json is ready" -ForegroundColor DarkGreen
 }
 
