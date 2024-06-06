@@ -23,6 +23,7 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 # Required for CLI commands
 Write-Header "Az CLI Login"
 az login --service-principal --username $Env:spnClientID --password=$Env:spnClientSecret --tenant $Env:spnTenantId
+az account set -s $Env:subscriptionId
 
 # Making extension install dynamic
 Write-Header "Installing Azure CLI extensions"
@@ -99,7 +100,7 @@ az k8s-extension create --name arc-data-services `
                         --resource-group $Env:resourceGroup `
                         --auto-upgrade false `
                         --scope cluster `
-                        --version 1.26.0 `
+                        --version 1.29.0 `
                         --release-namespace arc `
                         --config Microsoft.CustomLocation.ServiceAccount=sa-bootstrapper
 

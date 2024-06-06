@@ -53,6 +53,7 @@ sudo -u $adminUsername az extension add --name k8s-extension
 echo "Log in to Azure"
 sudo -u $adminUsername az login --service-principal --username $SPN_CLIENT_ID --password=$SPN_CLIENT_SECRET --tenant $SPN_TENANT_ID
 subscriptionId=$(sudo -u $adminUsername az account show --query id --output tsv)
+sudo -u $adminUsername az account set -s $subscriptionId
 export AZURE_RESOURCE_GROUP=$(sudo -u $adminUsername az resource list --query "[?name=='$stagingStorageAccountName']".[resourceGroup] --resource-type "Microsoft.Storage/storageAccounts" -o tsv)
 az -v
 echo ""
@@ -220,7 +221,7 @@ while true; do
   # Iterate over each node and check its status
   for node in $nodes; do
     ready=$(kubectl get nodes $node --kubeconfig=./$CLUSTER_NAME.kubeconfig -o json | jq -r '.status.conditions[] | select(.type=="Ready") | .status')
-    
+
     if [[ $ready != "True" ]]; then
       echo "Node $node is not ready."
       all_ready=false
@@ -254,7 +255,7 @@ sudo service sshd restart
 echo ""
 sudo -u $adminUsername kubectl apply -f ${templateBaseUrl}artifacts/capiStorageClass.yaml
 
-# Renaming CAPI cluster context name 
+# Renaming CAPI cluster context name
 echo ""
 sudo -u $adminUsername kubectl config rename-context "$CLUSTER_NAME-admin@$CLUSTER_NAME" "arcbox-capi"
 
