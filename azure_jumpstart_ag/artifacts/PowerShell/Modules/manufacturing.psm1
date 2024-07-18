@@ -229,7 +229,7 @@ function Deploy-AIO {
         $arcClusterName = $AgConfig.SiteConfig[$clusterName].ArcClusterName + "-$namingGuid"
         $keyVaultId = (az keyvault list -g $resourceGroup --resource-type vault --query "[$kvIndex].id" -o tsv)
         $retryCount = 0
-        $maxRetries = 5
+        $maxRetries = 50
         $aioStatus = "notDeployed"
 
         # Enable custom locations on the Arc-enabled cluster
@@ -261,7 +261,7 @@ function Deploy-AIO {
     foreach ($cluster in $AgConfig.SiteConfig.GetEnumerator()) {
         $clusterName = $cluster.Name.ToLower()
         $retryCount = 0
-        $maxRetries = 25
+        $maxRetries = 50
         kubectx $clusterName
         do {
             $output = az iot ops check --as-object --only-show-errors
