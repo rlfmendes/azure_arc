@@ -1,0 +1,1 @@
+echo "hello from create-jumpstart-local-iso.sh"
