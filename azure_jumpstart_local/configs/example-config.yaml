@@ -23,3 +23,5 @@
  k8sCLuster:
     type: "k3s"
     arcEnable: true
+    multiNode: false
+    
