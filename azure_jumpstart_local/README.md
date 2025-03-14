@@ -1,4 +1,4 @@
-# Welcome to Junpstart Local
+# Welcome to Jumpstart Local
 
 ## Getting Started
 There are two ways to get started:
