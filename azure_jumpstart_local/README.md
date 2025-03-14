@@ -6,7 +6,7 @@ There are two ways to get started:
 > Please note all scripts referenced in this readme are meant to run directly on a Linux shell running on one of the supported distros.
 
 ### Deploying over existing supported Linux Distro
-Run the install script diorectly from a terminal
+Run the install script directly from a terminal
 
 `curl -sfL https://aka.ms/get-jumpstart-local | sh`
 
